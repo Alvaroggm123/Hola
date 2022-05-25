@@ -1,0 +1,55 @@
+PARSER_BEGIN(comp)
+import java.io.*;
+class comp
+{
+	public static void main( String[] args )throws ParseException
+	{
+		try
+		{		
+     		comp Checker = new comp( System.in ) ;
+			Checker.Program();
+			System.out.println("\tHabemus analizado todo.");			
+		}
+		catch(ParseException e)
+		{
+			System.err.println(e.getMessage());
+			System.out.println("\tChecker ha terminado.");
+		}
+		catch(TokenMgrError e)
+		{
+			System.err.println(e.getMessage());
+			System.out.println("\tChecker ha terminado.");
+		}
+	}
+}
+PARSER_END(comp)
+
+TOKEN : 
+{ 
+	< #DIGITO : 	(["0"-"9"])+>			|
+	< #LETRA : 		(["a"-"z","A"-"Z"])+>	|
+	< #SIMCORREO : 	(["_","-"])> |
+	< #GATU : 	(["#"])>
+}
+
+TOKEN : 
+{ 
+	<NUMERO: (<DIGITO>)>{System.out.println("Numero detectado: " + image + "");} |
+	<DECIMAL: (<DIGITO>)+ "." (<DIGITO>)+ >{System.out.println("Numero decimal detectado: " + image + "");} |
+	<EMAIL: <LETRA>(<DIGITO>|<LETRA>|<SIMCORREO>)+ "@" <LETRA>(<DIGITO>|<LETRA>|<SIMCORREO>)+ "." <LETRA>(<LETRA>)+ >{System.out.println("Email detectado: " + image + "");} |
+	<IDENTIFICADOR: <LETRA>(<LETRA>|<DIGITO>)+ >{System.out.println("Identificador: " + image + "");}
+}
+TOKEN : 
+{
+	<URL: ("http"|"https") "://" <LETRA>(<DIGITO>|<LETRA>|<SIMCORREO>)+ "." <LETRA>(<LETRA>)+ "." ((<LETRA>(<LETRA>)"/")+|<GATU>|<SIMCORREO>|<LETRA>(<LETRA>))+  >{System.out.println("URL: " + image + "");}
+}
+SKIP : 
+{ 
+	" "|"\n" | "\r" | "\r\n" | "\t"
+	}
+
+void Program() :
+{}
+{
+	(<NUMERO> | <DECIMAL> | <IDENTIFICADOR> | <EMAIL> | <URL>)* <EOF>
+}
